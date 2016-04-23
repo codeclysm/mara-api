@@ -2,9 +2,11 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/codeclysm/mara-api/auth"
 	"github.com/gin-gonic/gin"
+	"github.com/itsjamie/gin-cors"
 )
 
 // Server contains the handlers for the rest api
@@ -15,6 +17,17 @@ type Server struct {
 // New creates a new engine
 func (s *Server) New() *gin.Engine {
 	r := gin.Default()
+
+	r.Use(cors.Middleware(cors.Config{
+		Origins:         "*",
+		Methods:         "GET, PUT, POST, DELETE",
+		RequestHeaders:  "Origin, Authorization, Content-Type",
+		ExposedHeaders:  "",
+		MaxAge:          50 * time.Second,
+		Credentials:     true,
+		ValidateHeaders: false,
+	}))
+
 	r.POST("/login", s.Login)
 	return r
 }
