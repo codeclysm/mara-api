@@ -8,7 +8,7 @@ import (
 
 	"github.com/codeclysm/mara-api/auth"
 	"github.com/codeclysm/rdbutils"
-	"github.com/dancannon/gorethink"
+	"gopkg.in/dancannon/gorethink.v1"
 )
 
 var (
