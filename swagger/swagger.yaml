@@ -1,0 +1,467 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  CreateCalendarPayload:
+    properties:
+      email:
+        description: The email of who's requesting it
+        example: user@example.com
+        format: email
+        type: string
+      notes:
+        description: Internal notes about the Appointment
+        type: string
+      phone:
+        description: The phone of the client
+        example: "3347662313"
+        type: string
+      problematic:
+        default: false
+        description: Option specifying that the work is problematic for some reason
+        type: boolean
+      send_email:
+        default: false
+        description: Option to send email to the client
+        type: boolean
+      send_sms:
+        default: false
+        description: Option to send sms to the client
+        type: boolean
+      status:
+        description: The status of the work. Can be one of todo/doing/done
+        example: todo
+        pattern: todo|doing|done
+        type: string
+      urgent:
+        default: false
+        description: Option specifying that the work is to be done now
+        type: boolean
+      what:
+        description: What is the purpose of the appointment
+        example: Convergenza
+        type: string
+      when:
+        description: When is the appointment scheduled
+        format: date-time
+        type: string
+      where:
+        description: Where is the appointment scheduled
+        example: Budrio
+        type: string
+      who:
+        description: Who is requesting the appointment
+        example: Pippo Pippis
+        type: string
+    required:
+    - who
+    - what
+    - when
+    - where
+    title: CreateCalendarPayload
+    type: object
+  EditCalendarPayload:
+    properties:
+      email:
+        description: The email of who's requesting it
+        example: user@example.com
+        format: email
+        type: string
+      notes:
+        description: Internal notes about the Appointment
+        type: string
+      phone:
+        description: The phone of the client
+        example: "3347662313"
+        type: string
+      problematic:
+        default: false
+        description: Option specifying that the work is problematic for some reason
+        type: boolean
+      send_email:
+        default: false
+        description: Option to send email to the client
+        type: boolean
+      send_sms:
+        default: false
+        description: Option to send sms to the client
+        type: boolean
+      status:
+        description: The status of the work. Can be one of todo/doing/done
+        example: todo
+        pattern: todo|doing|done
+        type: string
+      urgent:
+        default: false
+        description: Option specifying that the work is to be done now
+        type: boolean
+      what:
+        description: What is the purpose of the appointment
+        example: Convergenza
+        type: string
+      when:
+        description: When is the appointment scheduled
+        format: date-time
+        type: string
+      where:
+        description: Where is the appointment scheduled
+        example: Budrio
+        type: string
+      who:
+        description: Who is requesting the appointment
+        example: Pippo Pippis
+        type: string
+    required:
+    - who
+    - what
+    - when
+    - where
+    title: EditCalendarPayload
+    type: object
+  LoginAuthPayload:
+    properties:
+      password:
+        description: The password
+        example: password
+        type: string
+      user:
+        description: The username
+        example: user
+        type: string
+    title: LoginAuthPayload
+    type: object
+  MaraAppointment:
+    description: MaraAppointment media type (default view)
+    example:
+      email: user@example.com
+      href: Eligendi natus.
+      id: 41641ce1-342c-49f4-a24d-ee9cbb67bdf6
+      notes: Dicta consectetur illo mollitia qui qui pariatur.
+      phone: "3347662313"
+      problematic: true
+      send_email: false
+      send_sms: false
+      status: todo
+      urgent: true
+      what: Convergenza
+      when: 1986-05-01T09:10:31+02:00
+      where: Budrio
+      who: Pippo Pippis
+    properties:
+      email:
+        description: The email of who's requesting it
+        example: user@example.com
+        format: email
+        type: string
+      href:
+        description: The url of the appointment
+        example: Eligendi natus.
+        type: string
+      id:
+        description: The id of the appointment
+        example: 41641ce1-342c-49f4-a24d-ee9cbb67bdf6
+        format: uuid
+        type: string
+      notes:
+        description: Internal notes about the Appointment
+        example: Dicta consectetur illo mollitia qui qui pariatur.
+        type: string
+      phone:
+        description: The phone of the client
+        example: "3347662313"
+        type: string
+      problematic:
+        default: false
+        description: Option specifying that the work is problematic for some reason
+        example: true
+        type: boolean
+      send_email:
+        default: false
+        description: Option to send email to the client
+        example: false
+        type: boolean
+      send_sms:
+        default: false
+        description: Option to send sms to the client
+        example: false
+        type: boolean
+      status:
+        description: The status of the work. Can be one of todo/doing/done
+        example: todo
+        pattern: todo|doing|done
+        type: string
+      urgent:
+        default: false
+        description: Option specifying that the work is to be done now
+        example: true
+        type: boolean
+      what:
+        description: What is the purpose of the appointment
+        example: Convergenza
+        type: string
+      when:
+        description: When is the appointment scheduled
+        example: 1986-05-01T09:10:31+02:00
+        format: date-time
+        type: string
+      where:
+        description: Where is the appointment scheduled
+        example: Budrio
+        type: string
+      who:
+        description: Who is requesting the appointment
+        example: Pippo Pippis
+        type: string
+    title: 'Mediatype identifier: application/vnd.mara.appointment'
+    type: object
+  MaraAppointmentCollection:
+    description: MaraAppointmentCollection is the media type for an array of MaraAppointment
+      (default view)
+    example:
+    - email: user@example.com
+      href: Eligendi natus.
+      id: 41641ce1-342c-49f4-a24d-ee9cbb67bdf6
+      notes: Dicta consectetur illo mollitia qui qui pariatur.
+      phone: "3347662313"
+      problematic: true
+      send_email: false
+      send_sms: false
+      status: todo
+      urgent: true
+      what: Convergenza
+      when: 1986-05-01T09:10:31+02:00
+      where: Budrio
+      who: Pippo Pippis
+    - email: user@example.com
+      href: Eligendi natus.
+      id: 41641ce1-342c-49f4-a24d-ee9cbb67bdf6
+      notes: Dicta consectetur illo mollitia qui qui pariatur.
+      phone: "3347662313"
+      problematic: true
+      send_email: false
+      send_sms: false
+      status: todo
+      urgent: true
+      what: Convergenza
+      when: 1986-05-01T09:10:31+02:00
+      where: Budrio
+      who: Pippo Pippis
+    items:
+      $ref: '#/definitions/MaraAppointment'
+    title: 'Mediatype identifier: application/vnd.mara.appointment; type=collection'
+    type: array
+  MaraToken:
+    description: MaraToken media type (default view)
+    example:
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+    properties:
+      token:
+        description: The token to use in subsequent api calls
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+        type: string
+    title: 'Mediatype identifier: application/vnd.mara.token'
+    type: object
+  ResetAuthPayload:
+    properties:
+      email:
+        description: The email that will receive the new password
+        example: user@example.com
+        format: email
+        type: string
+    title: ResetAuthPayload
+    type: object
+host: localhost:9000
+info:
+  title: An api to handle appointments
+  version: ""
+paths:
+  /appointments:
+    get:
+      description: |-
+        show a list of appointments for the selected week
+
+        ** Required security scopes**:
+          * `api:access`
+      operationId: calendar#list
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/MaraAppointmentCollection'
+      schemes:
+      - http
+      summary: list calendar
+      tags:
+      - calendar
+    put:
+      description: |-
+        create a new appointment
+
+        ** Required security scopes**:
+          * `api:access`
+      operationId: calendar#create
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/CreateCalendarPayload'
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+      schemes:
+      - http
+      summary: create calendar
+      tags:
+      - calendar
+  /appointments/{id}:
+    delete:
+      description: |-
+        deletes a single appointment
+
+        ** Required security scopes**:
+          * `api:access`
+      operationId: calendar#delete
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/MaraAppointment'
+        "400":
+          description: Bad Request
+      schemes:
+      - http
+      summary: delete calendar
+      tags:
+      - calendar
+    get:
+      description: |-
+        show the details of a single appointment
+
+        ** Required security scopes**:
+          * `api:access`
+      operationId: calendar#show
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/MaraAppointment'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: show calendar
+      tags:
+      - calendar
+    post:
+      description: |-
+        change properties of a single appointment
+
+        ** Required security scopes**:
+          * `api:access`
+      operationId: calendar#edit
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/EditCalendarPayload'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/MaraAppointment'
+        "400":
+          description: Bad Request
+      schemes:
+      - http
+      summary: edit calendar
+      tags:
+      - calendar
+  /auth/login:
+    post:
+      description: Login with username and password and obtain a token
+      operationId: auth#login
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/LoginAuthPayload'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/MaraToken'
+        "400":
+          description: Bad Request
+      schemes:
+      - http
+      summary: login auth
+      tags:
+      - auth
+  /auth/reset:
+    post:
+      description: Send a new password to the email specified
+      operationId: auth#reset
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ResetAuthPayload'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      schemes:
+      - http
+      summary: reset auth
+      tags:
+      - auth
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+responses:
+  BadRequest:
+    description: Bad Request
+  Created:
+    description: Created
+  NotFound:
+    description: Not Found
+  OK:
+    description: OK
+schemes:
+- http
+securityDefinitions:
+  jwt:
+    description: |2-
+
+
+      **Security Scopes**:
+        * `api:access`: API access
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
