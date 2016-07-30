@@ -133,9 +133,6 @@ func unmarshalResetAuthPayload(ctx context.Context, service *goa.Service, req *h
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}
-	if err := payload.Validate(); err != nil {
-		return err
-	}
 	goa.ContextRequest(ctx).Payload = payload.Publicize()
 	return nil
 }

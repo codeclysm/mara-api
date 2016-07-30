@@ -218,41 +218,21 @@ type Login struct {
 
 // reset user type.
 type reset struct {
-	// The email that will receive the new password
-	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-}
-
-// Validate validates the reset type instance.
-func (ut *reset) Validate() (err error) {
-	if ut.Email != nil {
-		if err2 := goa.ValidateFormat(goa.FormatEmail, *ut.Email); err2 != nil {
-			err = goa.MergeErrors(err, goa.InvalidFormatError(`response.email`, *ut.Email, goa.FormatEmail, err2))
-		}
-	}
-	return
+	// The user that will receive the new password
+	User *string `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
 }
 
 // Publicize creates Reset from reset
 func (ut *reset) Publicize() *Reset {
 	var pub Reset
-	if ut.Email != nil {
-		pub.Email = ut.Email
+	if ut.User != nil {
+		pub.User = ut.User
 	}
 	return &pub
 }
 
 // Reset user type.
 type Reset struct {
-	// The email that will receive the new password
-	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-}
-
-// Validate validates the Reset type instance.
-func (ut *Reset) Validate() (err error) {
-	if ut.Email != nil {
-		if err2 := goa.ValidateFormat(goa.FormatEmail, *ut.Email); err2 != nil {
-			err = goa.MergeErrors(err, goa.InvalidFormatError(`response.email`, *ut.Email, goa.FormatEmail, err2))
-		}
-	}
-	return
+	// The user that will receive the new password
+	User *string `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
 }

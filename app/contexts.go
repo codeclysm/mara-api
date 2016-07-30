@@ -98,43 +98,23 @@ func NewResetAuthContext(ctx context.Context, service *goa.Service) (*ResetAuthC
 
 // resetAuthPayload is the auth reset action payload.
 type resetAuthPayload struct {
-	// The email that will receive the new password
-	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-}
-
-// Validate runs the validation rules defined in the design.
-func (payload *resetAuthPayload) Validate() (err error) {
-	if payload.Email != nil {
-		if err2 := goa.ValidateFormat(goa.FormatEmail, *payload.Email); err2 != nil {
-			err = goa.MergeErrors(err, goa.InvalidFormatError(`raw.email`, *payload.Email, goa.FormatEmail, err2))
-		}
-	}
-	return
+	// The user that will receive the new password
+	User *string `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
 }
 
 // Publicize creates ResetAuthPayload from resetAuthPayload
 func (payload *resetAuthPayload) Publicize() *ResetAuthPayload {
 	var pub ResetAuthPayload
-	if payload.Email != nil {
-		pub.Email = payload.Email
+	if payload.User != nil {
+		pub.User = payload.User
 	}
 	return &pub
 }
 
 // ResetAuthPayload is the auth reset action payload.
 type ResetAuthPayload struct {
-	// The email that will receive the new password
-	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-}
-
-// Validate runs the validation rules defined in the design.
-func (payload *ResetAuthPayload) Validate() (err error) {
-	if payload.Email != nil {
-		if err2 := goa.ValidateFormat(goa.FormatEmail, *payload.Email); err2 != nil {
-			err = goa.MergeErrors(err, goa.InvalidFormatError(`raw.email`, *payload.Email, goa.FormatEmail, err2))
-		}
-	}
-	return
+	// The user that will receive the new password
+	User *string `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
 }
 
 // OK sends a HTTP response with status code 200.

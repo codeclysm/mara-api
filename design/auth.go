@@ -33,9 +33,8 @@ var LoginPayload = Type("Login", func() {
 })
 
 var ResetPayload = Type("Reset", func() {
-	Attribute("email", String, "The email that will receive the new password", func() {
-		Example("user@example.com")
-		Format("email")
+	Attribute("user", String, "The user that will receive the new password", func() {
+		Example("user")
 	})
 })
 

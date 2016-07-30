@@ -159,19 +159,6 @@ func ResetAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service
 		service.Encoder.Register(newEncoder, "*/*")
 	}
 
-	// Validate payload
-	err := payload.Validate()
-	if err != nil {
-		e, ok := err.(goa.ServiceError)
-		if !ok {
-			panic(err) // bug
-		}
-		if e.ResponseStatus() != 400 {
-			t.Errorf("unexpected payload validation error: %+v", e)
-		}
-		return nil
-	}
-
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
@@ -227,19 +214,6 @@ func ResetAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl a
 		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
 		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
 		service.Encoder.Register(newEncoder, "*/*")
-	}
-
-	// Validate payload
-	err := payload.Validate()
-	if err != nil {
-		e, ok := err.(goa.ServiceError)
-		if !ok {
-			panic(err) // bug
-		}
-		if e.ResponseStatus() != 200 {
-			t.Errorf("unexpected payload validation error: %+v", e)
-		}
-		return nil
 	}
 
 	// Setup request context

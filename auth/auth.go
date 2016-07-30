@@ -8,6 +8,8 @@ import (
 
 	"github.com/codeclysm/rdbutils"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/juju/errors"
+	"gopkg.in/dancannon/gorethink.v1"
 	"gopkg.in/hlandau/passlib.v1"
 )
 
@@ -21,12 +23,7 @@ type Client struct {
 // Login exchanges a user and a password for a jwt token. It returns an error if
 // the user doesn't exist (or if there is a problem with the database)
 func (c *Client) Login(data *LoginData) (string, error) {
-	cursor, err := c.DB.Run(c.DB.Query().Get(data.User))
-	if err != nil {
-		return "", err
-	}
-	user := new(User)
-	err = cursor.One(user)
+	user, err := c.ByID(data.User)
 	if err != nil {
 		return "", ErrorNotFound{User: data.User, Message: err.Error()}
 	}
@@ -46,6 +43,28 @@ func (c *Client) Login(data *LoginData) (string, error) {
 	return tokenString, nil
 }
 
+// ByID returns the user given the id
+func (c *Client) ByID(id string) (*User, error) {
+	cursor, err := c.DB.Run(c.DB.Query().Get(id))
+	if err != nil {
+		return nil, err
+	}
+	user := new(User)
+	err = cursor.One(user)
+	return user, err
+}
+
+// Save persists an user on the database
+func (c *Client) Save(user *User) error {
+	options := gorethink.InsertOpts{Conflict: "replace"}
+	query := c.DB.Query().Insert(user, options)
+	_, err := c.DB.RunWrite(query)
+	if err != nil {
+		return errors.Annotatef(err, "while executing the query %v", query)
+	}
+	return nil
+}
+
 // LoginData is a helper struct containing a username and a password. You can use
 // it to marshal/unmarshal json data
 type LoginData struct {
@@ -57,6 +76,13 @@ type LoginData struct {
 type User struct {
 	Username string `gorethink:"id"`
 	Password string `gorethink:"password"`
+	Email    string `gorethink:"email"`
+}
+
+// SetPassword changes the password of the user
+func (u *User) SetPassword(password string) {
+	hash, _ := passlib.Hash(password)
+	u.Password = hash
 }
 
 // ErrorNotFound is returned when the requested user is not present in the db

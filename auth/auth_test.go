@@ -3,11 +3,11 @@ package auth_test
 import (
 	"testing"
 
+	"gopkg.in/dancannon/gorethink.v1"
 	"gopkg.in/hlandau/passlib.v1"
 
 	"github.com/codeclysm/mara-api/auth"
 	"github.com/codeclysm/rdbutils"
-	"github.com/dancannon/gorethink"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/stretchr/testify/suite"
 )
