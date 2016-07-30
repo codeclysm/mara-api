@@ -1,7 +1,10 @@
 package main
 
 import (
+	"log"
+
 	"github.com/codeclysm/mara-api/app"
+	"github.com/codeclysm/mara-api/auth"
 	"github.com/goadesign/goa"
 )
 
@@ -17,12 +20,16 @@ func NewAuthController(service *goa.Service) *AuthController {
 
 // Login runs the login action.
 func (c *AuthController) Login(ctx *app.LoginAuthContext) error {
-	// AuthController_Login: start_implement
-
-	// Put your logic here
-
-	// AuthController_Login: end_implement
-	res := &app.MaraToken{}
+	data := auth.LoginData{
+		User:     *ctx.Payload.User,
+		Password: *ctx.Payload.Password,
+	}
+	token, err := Auth.Login(&data)
+	if err != nil {
+		log.Println(err.Error())
+		return ctx.BadRequest()
+	}
+	res := &app.MaraToken{Token: &token}
 	return ctx.OK(res)
 }
 
