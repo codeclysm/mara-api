@@ -33,9 +33,12 @@ func (c *Client) Login(data *LoginData) (string, error) {
 	}
 
 	// Create the token
-	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims["user"] = user.Username
-	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	claims := jwt.MapClaims{
+		"user": user.Username,
+		"exp":  time.Now().Add(time.Hour * 72).Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(c.SigningKey))
 	if err != nil {
 		return "", err

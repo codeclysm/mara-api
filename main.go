@@ -7,9 +7,11 @@ import (
 
 	"github.com/codeclysm/mara-api/app"
 	"github.com/codeclysm/mara-api/auth"
+	"github.com/codeclysm/mara-api/calendar"
 	"github.com/codeclysm/rdbutils"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
+	"github.com/goadesign/goa/middleware/security/jwt"
 )
 
 var (
@@ -18,23 +20,36 @@ var (
 
 	// Auth is the client to handle authentication
 	Auth auth.Client
+	// Calendar is the client that handles the appointments
+	Calendar calendar.Client
 )
 
 func main() {
 	// Create service
 	service := goa.New("mara")
 
-	// Connect to the Database
+	// Users Client
 	dbu := rdbutils.Database{Name: "mara", Table: "users"}
 	if err := dbu.Connect(); err != nil {
 		panic("Missing database")
 	}
 	Auth = auth.Client{DB: &dbu, SigningKey: *signingKey}
+
+	// Calendar Client
+	dbc := rdbutils.Database{Name: "mara", Table: "appointments"}
+	if err := dbc.Connect(); err != nil {
+		panic("Missing database")
+	}
+	Calendar = calendar.Client{DB: &dbc}
+
 	// Mount middleware
 	service.Use(middleware.RequestID())
 	service.Use(middleware.LogRequest(true))
 	service.Use(middleware.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
+
+	// Mount Jwt security
+	app.UseJWTMiddleware(service, jwt.New(*signingKey, nil, app.NewJWTSecurity()))
 
 	// Mount "auth" controller
 	c := NewAuthController(service)

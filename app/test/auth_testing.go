@@ -19,7 +19,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func LoginAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.LoginAuthPayload) http.ResponseWriter {
+func LoginAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Login) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -76,7 +76,7 @@ func LoginAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func LoginAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.LoginAuthPayload) (http.ResponseWriter, *app.MaraToken) {
+func LoginAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Login) (http.ResponseWriter, *app.MaraToken) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -141,7 +141,7 @@ func LoginAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl a
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ResetAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.ResetAuthPayload) http.ResponseWriter {
+func ResetAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Reset) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -198,7 +198,7 @@ func ResetAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ResetAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.ResetAuthPayload) http.ResponseWriter {
+func ResetAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Reset) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer

@@ -7,7 +7,6 @@ import (
 
 var JWT = JWTSecurity("jwt", func() {
 	Header("Authorization")
-	Scope("api:access", "API access")
 })
 
 var _ = Resource("calendar", func() {
@@ -15,7 +14,6 @@ var _ = Resource("calendar", func() {
 	DefaultMedia(AppointmentMedia)
 
 	Security(JWT, func() {
-		Scope("api:access")
 	})
 
 	Action("list", func() {
@@ -27,8 +25,9 @@ var _ = Resource("calendar", func() {
 		Description("create a new appointment")
 		Routing(PUT(""))
 		Payload(AppointmentPayload)
-		Response(Created)
+		Response(OK)
 		Response(BadRequest)
+		Response(InternalServerError)
 	})
 	Action("show", func() {
 		Description("show the details of a single appointment")

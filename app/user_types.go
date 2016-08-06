@@ -1,11 +1,11 @@
 //************************************************************************//
 // API "mara": Application User Types
 //
-// Generated with goagen v0.2.dev, command line:
+// Generated with goagen v1.0.0, command line:
 // $ goagen
 // --design=github.com/codeclysm/mara-api/design
 // --out=$(GOPATH)/src/github.com/codeclysm/mara-api
-// --version=v0.2.dev
+// --version=v1.0.0
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 //************************************************************************//

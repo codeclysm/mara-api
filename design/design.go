@@ -10,6 +10,12 @@ var _ = API("mara", func() {
 	Host("localhost:9000")
 	Origin("*", func() {
 		Methods("GET", "PUT", "POST", "DELETE")
-		Headers("Origin", "X-Requested-With", "Content-Type", "Accept")
+		Headers("Authorization", "Origin", "X-Requested-With", "Content-Type", "Accept")
+		Credentials()
 	})
+})
+
+var _ = Resource("public", func() {
+
+	Files("builder/v1/swagger.json", "swagger/swagger.json")
 })

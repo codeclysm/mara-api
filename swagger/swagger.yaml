@@ -4,7 +4,20 @@ consumes:
 - application/gob
 - application/x-gob
 definitions:
-  CreateCalendarPayload:
+  Appointment:
+    example:
+      email: user@example.com
+      notes: Accusamus quia aut.
+      phone: "3347662313"
+      problematic: true
+      send_email: true
+      send_sms: true
+      status: todo
+      urgent: false
+      what: Convergenza
+      when: 1992-12-13T13:57:40+01:00
+      where: Budrio
+      who: Pippo Pippis
     properties:
       email:
         description: The email of who's requesting it
@@ -13,6 +26,7 @@ definitions:
         type: string
       notes:
         description: Internal notes about the Appointment
+        example: Accusamus quia aut.
         type: string
       phone:
         description: The phone of the client
@@ -21,14 +35,17 @@ definitions:
       problematic:
         default: false
         description: Option specifying that the work is problematic for some reason
+        example: true
         type: boolean
       send_email:
         default: false
         description: Option to send email to the client
+        example: true
         type: boolean
       send_sms:
         default: false
         description: Option to send sms to the client
+        example: true
         type: boolean
       status:
         description: The status of the work. Can be one of todo/doing/done
@@ -38,6 +55,7 @@ definitions:
       urgent:
         default: false
         description: Option specifying that the work is to be done now
+        example: false
         type: boolean
       what:
         description: What is the purpose of the appointment
@@ -45,6 +63,7 @@ definitions:
         type: string
       when:
         description: When is the appointment scheduled
+        example: 1992-12-13T13:57:40+01:00
         format: date-time
         type: string
       where:
@@ -60,67 +79,12 @@ definitions:
     - what
     - when
     - where
-    title: CreateCalendarPayload
+    title: Appointment
     type: object
-  EditCalendarPayload:
-    properties:
-      email:
-        description: The email of who's requesting it
-        example: user@example.com
-        format: email
-        type: string
-      notes:
-        description: Internal notes about the Appointment
-        type: string
-      phone:
-        description: The phone of the client
-        example: "3347662313"
-        type: string
-      problematic:
-        default: false
-        description: Option specifying that the work is problematic for some reason
-        type: boolean
-      send_email:
-        default: false
-        description: Option to send email to the client
-        type: boolean
-      send_sms:
-        default: false
-        description: Option to send sms to the client
-        type: boolean
-      status:
-        description: The status of the work. Can be one of todo/doing/done
-        example: todo
-        pattern: todo|doing|done
-        type: string
-      urgent:
-        default: false
-        description: Option specifying that the work is to be done now
-        type: boolean
-      what:
-        description: What is the purpose of the appointment
-        example: Convergenza
-        type: string
-      when:
-        description: When is the appointment scheduled
-        format: date-time
-        type: string
-      where:
-        description: Where is the appointment scheduled
-        example: Budrio
-        type: string
-      who:
-        description: Who is requesting the appointment
-        example: Pippo Pippis
-        type: string
-    required:
-    - who
-    - what
-    - when
-    - where
-    title: EditCalendarPayload
-    type: object
-  LoginAuthPayload:
+  Login:
+    example:
+      password: password
+      user: user
     properties:
       password:
         description: The password
@@ -130,14 +94,14 @@ definitions:
         description: The username
         example: user
         type: string
-    title: LoginAuthPayload
+    title: Login
     type: object
   MaraAppointment:
     description: MaraAppointment media type (default view)
     example:
       email: user@example.com
       href: Eligendi natus.
-      id: 41641ce1-342c-49f4-a24d-ee9cbb67bdf6
+      id: 49d9f593-3106-40a5-b235-af6102cc4a07
       notes: Dicta consectetur illo mollitia qui qui pariatur.
       phone: "3347662313"
       problematic: true
@@ -161,7 +125,7 @@ definitions:
         type: string
       id:
         description: The id of the appointment
-        example: 41641ce1-342c-49f4-a24d-ee9cbb67bdf6
+        example: 49d9f593-3106-40a5-b235-af6102cc4a07
         format: uuid
         type: string
       notes:
@@ -222,7 +186,7 @@ definitions:
     example:
     - email: user@example.com
       href: Eligendi natus.
-      id: 41641ce1-342c-49f4-a24d-ee9cbb67bdf6
+      id: 49d9f593-3106-40a5-b235-af6102cc4a07
       notes: Dicta consectetur illo mollitia qui qui pariatur.
       phone: "3347662313"
       problematic: true
@@ -236,7 +200,7 @@ definitions:
       who: Pippo Pippis
     - email: user@example.com
       href: Eligendi natus.
-      id: 41641ce1-342c-49f4-a24d-ee9cbb67bdf6
+      id: 49d9f593-3106-40a5-b235-af6102cc4a07
       notes: Dicta consectetur illo mollitia qui qui pariatur.
       phone: "3347662313"
       problematic: true
@@ -263,14 +227,15 @@ definitions:
         type: string
     title: 'Mediatype identifier: application/vnd.mara.token'
     type: object
-  ResetAuthPayload:
+  Reset:
+    example:
+      user: user
     properties:
-      email:
-        description: The email that will receive the new password
-        example: user@example.com
-        format: email
+      user:
+        description: The user that will receive the new password
+        example: user
         type: string
-    title: ResetAuthPayload
+    title: Reset
     type: object
 host: localhost:9000
 info:
@@ -279,11 +244,10 @@ info:
 paths:
   /appointments:
     get:
-      description: |-
+      description: |
         show a list of appointments for the selected week
 
-        ** Required security scopes**:
-          * `api:access`
+        Required security scopes:
       operationId: calendar#list
       responses:
         "200":
@@ -292,39 +256,45 @@ paths:
             $ref: '#/definitions/MaraAppointmentCollection'
       schemes:
       - http
+      security:
+      - jwt: []
       summary: list calendar
       tags:
       - calendar
     put:
-      description: |-
+      description: |
         create a new appointment
 
-        ** Required security scopes**:
-          * `api:access`
+        Required security scopes:
       operationId: calendar#create
       parameters:
       - in: body
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/CreateCalendarPayload'
+          $ref: '#/definitions/Appointment'
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/MaraAppointment'
         "400":
           description: Bad Request
+        "500":
+          description: Internal Server Error
       schemes:
       - http
+      security:
+      - jwt: []
       summary: create calendar
       tags:
       - calendar
   /appointments/{id}:
     delete:
-      description: |-
+      description: |
         deletes a single appointment
 
-        ** Required security scopes**:
-          * `api:access`
+        Required security scopes:
       operationId: calendar#delete
       parameters:
       - in: path
@@ -340,15 +310,16 @@ paths:
           description: Bad Request
       schemes:
       - http
+      security:
+      - jwt: []
       summary: delete calendar
       tags:
       - calendar
     get:
-      description: |-
+      description: |
         show the details of a single appointment
 
-        ** Required security scopes**:
-          * `api:access`
+        Required security scopes:
       operationId: calendar#show
       parameters:
       - in: path
@@ -364,15 +335,16 @@ paths:
           description: Not Found
       schemes:
       - http
+      security:
+      - jwt: []
       summary: show calendar
       tags:
       - calendar
     post:
-      description: |-
+      description: |
         change properties of a single appointment
 
-        ** Required security scopes**:
-          * `api:access`
+        Required security scopes:
       operationId: calendar#edit
       parameters:
       - in: path
@@ -383,7 +355,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/EditCalendarPayload'
+          $ref: '#/definitions/Appointment'
       responses:
         "200":
           description: OK
@@ -393,6 +365,8 @@ paths:
           description: Bad Request
       schemes:
       - http
+      security:
+      - jwt: []
       summary: edit calendar
       tags:
       - calendar
@@ -405,7 +379,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/LoginAuthPayload'
+          $ref: '#/definitions/Login'
       responses:
         "200":
           description: OK
@@ -427,7 +401,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/ResetAuthPayload'
+          $ref: '#/definitions/Reset'
       responses:
         "200":
           description: OK
@@ -438,6 +412,17 @@ paths:
       summary: reset auth
       tags:
       - auth
+  /builder/v1/swagger.json:
+    get:
+      operationId: public#/builder/v1/swagger.json
+      responses:
+        "200":
+          description: File downloaded
+          schema:
+            type: file
+      schemes:
+      - http
+      summary: Download swagger/swagger.json
 produces:
 - application/json
 - application/xml
@@ -446,8 +431,8 @@ produces:
 responses:
   BadRequest:
     description: Bad Request
-  Created:
-    description: Created
+  InternalServerError:
+    description: Internal Server Error
   NotFound:
     description: Not Found
   OK:
@@ -456,11 +441,6 @@ schemes:
 - http
 securityDefinitions:
   jwt:
-    description: |2-
-
-
-      **Security Scopes**:
-        * `api:access`: API access
     in: header
     name: Authorization
     type: apiKey

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/codeclysm/mara-api/app"
+	"github.com/codeclysm/mara-api/calendar"
 	"github.com/goadesign/goa"
 )
 
@@ -17,12 +18,14 @@ func NewCalendarController(service *goa.Service) *CalendarController {
 
 // Create runs the create action.
 func (c *CalendarController) Create(ctx *app.CreateCalendarContext) error {
-	// CalendarController_Create: start_implement
+	a := fromPayload(ctx.Payload)
+	err := Calendar.Save(a)
+	if err != nil {
+		goa.LogError(ctx, err.Error())
+		return ctx.InternalServerError()
+	}
 
-	// Put your logic here
-
-	// CalendarController_Create: end_implement
-	return nil
+	return ctx.OK(toMedia(a))
 }
 
 // Delete runs the delete action.
@@ -67,4 +70,48 @@ func (c *CalendarController) Show(ctx *app.ShowCalendarContext) error {
 	// CalendarController_Show: end_implement
 	res := &app.MaraAppointment{}
 	return ctx.OK(res)
+}
+
+func fromPayload(a *app.Appointment) *calendar.Appointment {
+	ap := &calendar.Appointment{
+		Who:         a.Who,
+		What:        a.What,
+		When:        a.When,
+		Where:       a.Where,
+		Problematic: a.Problematic,
+		SendEmail:   a.SendEmail,
+		SendSMS:     a.SendSms,
+		Urgent:      a.Urgent,
+	}
+	if a.Email != nil {
+		ap.Email = *a.Email
+	}
+	if a.Notes != nil {
+		ap.Notes = *a.Notes
+	}
+	if a.Phone != nil {
+		ap.Phone = *a.Phone
+	}
+	if a.Status != nil {
+		ap.Status = *a.Status
+	}
+	return ap
+}
+
+func toMedia(a *calendar.Appointment) *app.MaraAppointment {
+	return &app.MaraAppointment{
+		Who:    &a.Who,
+		What:   &a.What,
+		When:   &a.When,
+		Where:  &a.Where,
+		Status: &a.Status,
+
+		Email:       &a.Email,
+		Notes:       &a.Notes,
+		Phone:       &a.Phone,
+		Problematic: a.Problematic,
+		SendEmail:   a.SendEmail,
+		SendSms:     a.SendSMS,
+		Urgent:      a.Urgent,
+	}
 }

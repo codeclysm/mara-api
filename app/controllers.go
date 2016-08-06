@@ -1,11 +1,11 @@
 //************************************************************************//
 // API "mara": Application Controllers
 //
-// Generated with goagen v0.2.dev, command line:
+// Generated with goagen v1.0.0, command line:
 // $ goagen
 // --design=github.com/codeclysm/mara-api/design
 // --out=$(GOPATH)/src/github.com/codeclysm/mara-api
-// --version=v0.2.dev
+// --version=v1.0.0
 //
 // The content of this file is auto-generated, DO NOT MODIFY
 //************************************************************************//
@@ -60,7 +60,7 @@ func MountAuthController(service *goa.Service, ctrl AuthController) {
 		}
 		// Build the payload
 		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
-			rctx.Payload = rawPayload.(*LoginAuthPayload)
+			rctx.Payload = rawPayload.(*Login)
 		} else {
 			return goa.MissingPayloadError()
 		}
@@ -82,7 +82,7 @@ func MountAuthController(service *goa.Service, ctrl AuthController) {
 		}
 		// Build the payload
 		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
-			rctx.Payload = rawPayload.(*ResetAuthPayload)
+			rctx.Payload = rawPayload.(*Reset)
 		} else {
 			return goa.MissingPayloadError()
 		}
@@ -104,11 +104,11 @@ func handleAuthOrigin(h goa.Handler) goa.Handler {
 		if cors.MatchOrigin(origin, "*") {
 			ctx = goa.WithLogContext(ctx, "origin", origin)
 			rw.Header().Set("Access-Control-Allow-Origin", "*")
-			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+				rw.Header().Set("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept")
 			}
 			return h(ctx, rw, req)
 		}
@@ -119,7 +119,7 @@ func handleAuthOrigin(h goa.Handler) goa.Handler {
 
 // unmarshalLoginAuthPayload unmarshals the request body into the context request data Payload field.
 func unmarshalLoginAuthPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
-	payload := &loginAuthPayload{}
+	payload := &login{}
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}
@@ -129,7 +129,7 @@ func unmarshalLoginAuthPayload(ctx context.Context, service *goa.Service, req *h
 
 // unmarshalResetAuthPayload unmarshals the request body into the context request data Payload field.
 func unmarshalResetAuthPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
-	payload := &resetAuthPayload{}
+	payload := &reset{}
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}
@@ -166,14 +166,14 @@ func MountCalendarController(service *goa.Service, ctrl CalendarController) {
 		}
 		// Build the payload
 		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
-			rctx.Payload = rawPayload.(*CreateCalendarPayload)
+			rctx.Payload = rawPayload.(*Appointment)
 		} else {
 			return goa.MissingPayloadError()
 		}
 		return ctrl.Create(rctx)
 	}
 	h = handleCalendarOrigin(h)
-	h = handleSecurity("jwt", h, "api:access")
+	h = handleSecurity("jwt", h)
 	service.Mux.Handle("PUT", "/appointments", ctrl.MuxHandler("Create", h, unmarshalCreateCalendarPayload))
 	service.LogInfo("mount", "ctrl", "Calendar", "action", "Create", "route", "PUT /appointments", "security", "jwt")
 
@@ -190,7 +190,7 @@ func MountCalendarController(service *goa.Service, ctrl CalendarController) {
 		return ctrl.Delete(rctx)
 	}
 	h = handleCalendarOrigin(h)
-	h = handleSecurity("jwt", h, "api:access")
+	h = handleSecurity("jwt", h)
 	service.Mux.Handle("DELETE", "/appointments/:id", ctrl.MuxHandler("Delete", h, nil))
 	service.LogInfo("mount", "ctrl", "Calendar", "action", "Delete", "route", "DELETE /appointments/:id", "security", "jwt")
 
@@ -206,14 +206,14 @@ func MountCalendarController(service *goa.Service, ctrl CalendarController) {
 		}
 		// Build the payload
 		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
-			rctx.Payload = rawPayload.(*EditCalendarPayload)
+			rctx.Payload = rawPayload.(*Appointment)
 		} else {
 			return goa.MissingPayloadError()
 		}
 		return ctrl.Edit(rctx)
 	}
 	h = handleCalendarOrigin(h)
-	h = handleSecurity("jwt", h, "api:access")
+	h = handleSecurity("jwt", h)
 	service.Mux.Handle("POST", "/appointments/:id", ctrl.MuxHandler("Edit", h, unmarshalEditCalendarPayload))
 	service.LogInfo("mount", "ctrl", "Calendar", "action", "Edit", "route", "POST /appointments/:id", "security", "jwt")
 
@@ -230,7 +230,7 @@ func MountCalendarController(service *goa.Service, ctrl CalendarController) {
 		return ctrl.List(rctx)
 	}
 	h = handleCalendarOrigin(h)
-	h = handleSecurity("jwt", h, "api:access")
+	h = handleSecurity("jwt", h)
 	service.Mux.Handle("GET", "/appointments", ctrl.MuxHandler("List", h, nil))
 	service.LogInfo("mount", "ctrl", "Calendar", "action", "List", "route", "GET /appointments", "security", "jwt")
 
@@ -247,7 +247,7 @@ func MountCalendarController(service *goa.Service, ctrl CalendarController) {
 		return ctrl.Show(rctx)
 	}
 	h = handleCalendarOrigin(h)
-	h = handleSecurity("jwt", h, "api:access")
+	h = handleSecurity("jwt", h)
 	service.Mux.Handle("GET", "/appointments/:id", ctrl.MuxHandler("Show", h, nil))
 	service.LogInfo("mount", "ctrl", "Calendar", "action", "Show", "route", "GET /appointments/:id", "security", "jwt")
 }
@@ -263,11 +263,11 @@ func handleCalendarOrigin(h goa.Handler) goa.Handler {
 		if cors.MatchOrigin(origin, "*") {
 			ctx = goa.WithLogContext(ctx, "origin", origin)
 			rw.Header().Set("Access-Control-Allow-Origin", "*")
-			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
 				rw.Header().Set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
-				rw.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+				rw.Header().Set("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept")
 			}
 			return h(ctx, rw, req)
 		}
@@ -278,7 +278,7 @@ func handleCalendarOrigin(h goa.Handler) goa.Handler {
 
 // unmarshalCreateCalendarPayload unmarshals the request body into the context request data Payload field.
 func unmarshalCreateCalendarPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
-	payload := &createCalendarPayload{}
+	payload := &appointment{}
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}
@@ -292,7 +292,7 @@ func unmarshalCreateCalendarPayload(ctx context.Context, service *goa.Service, r
 
 // unmarshalEditCalendarPayload unmarshals the request body into the context request data Payload field.
 func unmarshalEditCalendarPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
-	payload := &editCalendarPayload{}
+	payload := &appointment{}
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}
@@ -302,4 +302,45 @@ func unmarshalEditCalendarPayload(ctx context.Context, service *goa.Service, req
 	}
 	goa.ContextRequest(ctx).Payload = payload.Publicize()
 	return nil
+}
+
+// PublicController is the controller interface for the Public actions.
+type PublicController interface {
+	goa.Muxer
+	goa.FileServer
+}
+
+// MountPublicController "mounts" a Public resource controller on the given service.
+func MountPublicController(service *goa.Service, ctrl PublicController) {
+	initService(service)
+	var h goa.Handler
+
+	h = ctrl.FileHandler("/builder/v1/swagger.json", "swagger/swagger.json")
+	h = handlePublicOrigin(h)
+	service.Mux.Handle("GET", "/builder/v1/swagger.json", ctrl.MuxHandler("serve", h, nil))
+	service.LogInfo("mount", "ctrl", "Public", "files", "swagger/swagger.json", "route", "GET /builder/v1/swagger.json")
+}
+
+// handlePublicOrigin applies the CORS response headers corresponding to the origin.
+func handlePublicOrigin(h goa.Handler) goa.Handler {
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", "*")
+			rw.Header().Set("Access-Control-Allow-Credentials", "true")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
+				rw.Header().Set("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
 }
