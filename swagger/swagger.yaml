@@ -7,15 +7,15 @@ definitions:
   Appointment:
     example:
       email: user@example.com
-      notes: Accusamus quia aut.
+      notes: Repudiandae eveniet tempora.
       phone: "3347662313"
-      problematic: true
-      send_email: true
+      problematic: false
+      send_email: false
       send_sms: true
       status: todo
       urgent: false
       what: Convergenza
-      when: 1992-12-13T13:57:40+01:00
+      when: 2004-04-25T13:13:35+02:00
       where: Budrio
       who: Pippo Pippis
     properties:
@@ -26,7 +26,7 @@ definitions:
         type: string
       notes:
         description: Internal notes about the Appointment
-        example: Accusamus quia aut.
+        example: Repudiandae eveniet tempora.
         type: string
       phone:
         description: The phone of the client
@@ -35,12 +35,12 @@ definitions:
       problematic:
         default: false
         description: Option specifying that the work is problematic for some reason
-        example: true
+        example: false
         type: boolean
       send_email:
         default: false
         description: Option to send email to the client
-        example: true
+        example: false
         type: boolean
       send_sms:
         default: false
@@ -63,7 +63,7 @@ definitions:
         type: string
       when:
         description: When is the appointment scheduled
-        example: 1992-12-13T13:57:40+01:00
+        example: 2004-04-25T13:13:35+02:00
         format: date-time
         type: string
       where:
@@ -101,16 +101,16 @@ definitions:
     example:
       email: user@example.com
       href: Eligendi natus.
-      id: 49d9f593-3106-40a5-b235-af6102cc4a07
-      notes: Dicta consectetur illo mollitia qui qui pariatur.
+      id: Dicta consectetur illo mollitia qui qui pariatur.
+      notes: Doloremque suscipit aut sed omnis fugit accusamus.
       phone: "3347662313"
       problematic: true
-      send_email: false
-      send_sms: false
+      send_email: true
+      send_sms: true
       status: todo
       urgent: true
       what: Convergenza
-      when: 1986-05-01T09:10:31+02:00
+      when: 1988-01-03T19:41:46+01:00
       where: Budrio
       who: Pippo Pippis
     properties:
@@ -125,12 +125,11 @@ definitions:
         type: string
       id:
         description: The id of the appointment
-        example: 49d9f593-3106-40a5-b235-af6102cc4a07
-        format: uuid
+        example: Dicta consectetur illo mollitia qui qui pariatur.
         type: string
       notes:
         description: Internal notes about the Appointment
-        example: Dicta consectetur illo mollitia qui qui pariatur.
+        example: Doloremque suscipit aut sed omnis fugit accusamus.
         type: string
       phone:
         description: The phone of the client
@@ -144,12 +143,12 @@ definitions:
       send_email:
         default: false
         description: Option to send email to the client
-        example: false
+        example: true
         type: boolean
       send_sms:
         default: false
         description: Option to send sms to the client
-        example: false
+        example: true
         type: boolean
       status:
         description: The status of the work. Can be one of todo/doing/done
@@ -167,7 +166,7 @@ definitions:
         type: string
       when:
         description: When is the appointment scheduled
-        example: 1986-05-01T09:10:31+02:00
+        example: 1988-01-03T19:41:46+01:00
         format: date-time
         type: string
       where:
@@ -186,30 +185,30 @@ definitions:
     example:
     - email: user@example.com
       href: Eligendi natus.
-      id: 49d9f593-3106-40a5-b235-af6102cc4a07
-      notes: Dicta consectetur illo mollitia qui qui pariatur.
+      id: Dicta consectetur illo mollitia qui qui pariatur.
+      notes: Doloremque suscipit aut sed omnis fugit accusamus.
       phone: "3347662313"
       problematic: true
-      send_email: false
-      send_sms: false
+      send_email: true
+      send_sms: true
       status: todo
       urgent: true
       what: Convergenza
-      when: 1986-05-01T09:10:31+02:00
+      when: 1988-01-03T19:41:46+01:00
       where: Budrio
       who: Pippo Pippis
     - email: user@example.com
       href: Eligendi natus.
-      id: 49d9f593-3106-40a5-b235-af6102cc4a07
-      notes: Dicta consectetur illo mollitia qui qui pariatur.
+      id: Dicta consectetur illo mollitia qui qui pariatur.
+      notes: Doloremque suscipit aut sed omnis fugit accusamus.
       phone: "3347662313"
       problematic: true
-      send_email: false
-      send_sms: false
+      send_email: true
+      send_sms: true
       status: todo
       urgent: true
       what: Convergenza
-      when: 1986-05-01T09:10:31+02:00
+      when: 1988-01-03T19:41:46+01:00
       where: Budrio
       who: Pippo Pippis
     items:
@@ -245,15 +244,34 @@ paths:
   /appointments:
     get:
       description: |
-        show a list of appointments for the selected week
+        show a list of appointments for the selected time. If no interval is selected it shows the appointments of the current week
 
         Required security scopes:
       operationId: calendar#list
+      parameters:
+      - description: The end of the interval
+        in: query
+        name: end
+        required: false
+        type: string
+      - description: The start of the interval
+        in: query
+        name: start
+        required: false
+        type: string
+      - default: ""
+        description: Restrict the query to a location
+        in: query
+        name: where
+        required: false
+        type: string
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/MaraAppointmentCollection'
+        "500":
+          description: Internal Server Error
       schemes:
       - http
       security:
@@ -306,8 +324,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/MaraAppointment'
-        "400":
-          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
       schemes:
       - http
       security:
@@ -333,6 +353,8 @@ paths:
             $ref: '#/definitions/MaraAppointment'
         "404":
           description: Not Found
+        "500":
+          description: Internal Server Error
       schemes:
       - http
       security:
@@ -363,6 +385,10 @@ paths:
             $ref: '#/definitions/MaraAppointment'
         "400":
           description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
       schemes:
       - http
       security:

@@ -1,9 +1,12 @@
 package main
 
 import (
+	"time"
+
 	"github.com/codeclysm/mara-api/app"
 	"github.com/codeclysm/mara-api/calendar"
 	"github.com/goadesign/goa"
+	"github.com/jinzhu/now"
 	"github.com/juju/errors"
 )
 
@@ -73,12 +76,29 @@ func (c *CalendarController) Edit(ctx *app.EditCalendarContext) error {
 
 // List runs the list action.
 func (c *CalendarController) List(ctx *app.ListCalendarContext) error {
-	// CalendarController_List: start_implement
+	var start, end time.Time
+	if ctx.Start == nil {
+		start = now.BeginningOfWeek()
+	} else {
+		start = *ctx.Start
+	}
+	if ctx.End == nil {
+		end = now.EndOfWeek()
+	} else {
+		end = *ctx.End
+	}
 
-	// Put your logic here
+	list, err := Calendar.Between(ctx.Where, start, end)
+	if err != nil {
+		goa.LogError(ctx, err.Error())
+		return ctx.InternalServerError()
+	}
 
-	// CalendarController_List: end_implement
 	res := app.MaraAppointmentCollection{}
+	for i := range list {
+		res = append(res, toMedia(&list[i]))
+	}
+
 	return ctx.OK(res)
 }
 

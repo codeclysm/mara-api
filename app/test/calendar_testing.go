@@ -13,6 +13,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+	"time"
 )
 
 // CreateCalendarBadRequest runs the method Create of the given controller with the given parameters and payload.
@@ -716,11 +717,11 @@ func EditCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctr
 	return rw, mt
 }
 
-// ListCalendarOK runs the method List of the given controller with the given parameters.
-// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// ListCalendarInternalServerError runs the method List of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController) (http.ResponseWriter, app.MaraAppointmentCollection) {
+func ListCalendarInternalServerError(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, end *time.Time, start *time.Time, where string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -740,14 +741,122 @@ func ListCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctr
 
 	// Setup request context
 	rw := httptest.NewRecorder()
+	query := url.Values{}
+	if end != nil {
+		sliceVal := []string{*end.Format(time.RFC3339)}
+		query["end"] = sliceVal
+	}
+	if start != nil {
+		sliceVal := []string{*start.Format(time.RFC3339)}
+		query["start"] = sliceVal
+	}
+	{
+		sliceVal := []string{where}
+		query["where"] = sliceVal
+	}
 	u := &url.URL{
-		Path: fmt.Sprintf("/appointments"),
+		Path:     fmt.Sprintf("/appointments"),
+		RawQuery: query.Encode(),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
+	if end != nil {
+		sliceVal := []string{*end.Format(time.RFC3339)}
+		prms["end"] = sliceVal
+	}
+	if start != nil {
+		sliceVal := []string{*start.Format(time.RFC3339)}
+		prms["start"] = sliceVal
+	}
+	{
+		sliceVal := []string{where}
+		prms["where"] = sliceVal
+	}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "CalendarTest"), rw, req, prms)
+	listCtx, err := app.NewListCalendarContext(goaCtx, service)
+	if err != nil {
+		panic("invalid test data " + err.Error()) // bug
+	}
+
+	// Perform action
+	err = ctrl.List(listCtx)
+
+	// Validate response
+	if err != nil {
+		t.Fatalf("controller returned %s, logs:\n%s", err, logBuf.String())
+	}
+	if rw.Code != 500 {
+		t.Errorf("invalid response status code: got %+v, expected 500", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
+// ListCalendarOK runs the method List of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func ListCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, end *time.Time, start *time.Time, where string) (http.ResponseWriter, app.MaraAppointmentCollection) {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	query := url.Values{}
+	if end != nil {
+		sliceVal := []string{*end.Format(time.RFC3339)}
+		query["end"] = sliceVal
+	}
+	if start != nil {
+		sliceVal := []string{*start.Format(time.RFC3339)}
+		query["start"] = sliceVal
+	}
+	{
+		sliceVal := []string{where}
+		query["where"] = sliceVal
+	}
+	u := &url.URL{
+		Path:     fmt.Sprintf("/appointments"),
+		RawQuery: query.Encode(),
+	}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	if end != nil {
+		sliceVal := []string{*end.Format(time.RFC3339)}
+		prms["end"] = sliceVal
+	}
+	if start != nil {
+		sliceVal := []string{*start.Format(time.RFC3339)}
+		prms["start"] = sliceVal
+	}
+	{
+		sliceVal := []string{where}
+		prms["where"] = sliceVal
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}

@@ -18,7 +18,11 @@ type Client struct {
 // Between returns all the appointments in a certain location, after the time start and before the time end, included.
 func (c *Client) Between(location string, start, end time.Time) ([]Appointment, error) {
 	// Build the query
-	query := c.DB.Query().Filter(map[string]string{"where": location})
+	query := c.DB.Query()
+	if location != "" {
+		query = c.DB.Query().Filter(map[string]string{"where": location})
+	}
+
 	query = query.Filter(func(row gorethink.Term) gorethink.Term {
 		return row.Field("when").During(start, end)
 	})

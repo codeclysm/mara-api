@@ -17,9 +17,17 @@ var _ = Resource("calendar", func() {
 	})
 
 	Action("list", func() {
-		Description("show a list of appointments for the selected week")
+		Description("show a list of appointments for the selected time. If no interval is selected it shows the appointments of the current week")
 		Routing(GET(""))
 		Response(OK, CollectionOf(AppointmentMedia))
+		Response(InternalServerError)
+		Params(func() {
+			Param("where", String, "Restrict the query to a location", func() {
+				Default("")
+			})
+			Param("start", DateTime, "The start of the interval")
+			Param("end", DateTime, "The end of the interval")
+		})
 	})
 	Action("create", func() {
 		Description("create a new appointment")

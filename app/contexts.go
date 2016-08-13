@@ -15,6 +15,7 @@ package app
 import (
 	"github.com/goadesign/goa"
 	"golang.org/x/net/context"
+	"time"
 )
 
 // LoginAuthContext provides the auth login action context.
@@ -214,6 +215,9 @@ type ListCalendarContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
+	End   *time.Time
+	Start *time.Time
+	Where string
 }
 
 // NewListCalendarContext parses the incoming request URL and body, performs validations and creates the
@@ -224,6 +228,31 @@ func NewListCalendarContext(ctx context.Context, service *goa.Service) (*ListCal
 	resp.Service = service
 	req := goa.ContextRequest(ctx)
 	rctx := ListCalendarContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramEnd := req.Params["end"]
+	if len(paramEnd) > 0 {
+		rawEnd := paramEnd[0]
+		if end, err2 := time.Parse(time.RFC3339, rawEnd); err2 == nil {
+			tmp1 := &end
+			rctx.End = tmp1
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("end", rawEnd, "datetime"))
+		}
+	}
+	paramStart := req.Params["start"]
+	if len(paramStart) > 0 {
+		rawStart := paramStart[0]
+		if start, err2 := time.Parse(time.RFC3339, rawStart); err2 == nil {
+			tmp2 := &start
+			rctx.Start = tmp2
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("start", rawStart, "datetime"))
+		}
+	}
+	paramWhere := req.Params["where"]
+	if len(paramWhere) > 0 {
+		rawWhere := paramWhere[0]
+		rctx.Where = rawWhere
+	}
 	return &rctx, err
 }
 
@@ -231,6 +260,12 @@ func NewListCalendarContext(ctx context.Context, service *goa.Service) (*ListCal
 func (ctx *ListCalendarContext) OK(r MaraAppointmentCollection) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/vnd.mara.appointment; type=collection")
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// InternalServerError sends a HTTP response with status code 500.
+func (ctx *ListCalendarContext) InternalServerError() error {
+	ctx.ResponseData.WriteHeader(500)
+	return nil
 }
 
 // ShowCalendarContext provides the calendar show action context.
