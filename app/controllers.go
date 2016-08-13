@@ -95,6 +95,7 @@ func MountAuthController(service *goa.Service, ctrl AuthController) {
 
 // handleAuthOrigin applies the CORS response headers corresponding to the origin.
 func handleAuthOrigin(h goa.Handler) goa.Handler {
+
 	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		origin := req.Header.Get("Origin")
 		if origin == "" {
@@ -103,7 +104,7 @@ func handleAuthOrigin(h goa.Handler) goa.Handler {
 		}
 		if cors.MatchOrigin(origin, "*") {
 			ctx = goa.WithLogContext(ctx, "origin", origin)
-			rw.Header().Set("Access-Control-Allow-Origin", "*")
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
 			rw.Header().Set("Access-Control-Allow-Credentials", "true")
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
@@ -254,6 +255,7 @@ func MountCalendarController(service *goa.Service, ctrl CalendarController) {
 
 // handleCalendarOrigin applies the CORS response headers corresponding to the origin.
 func handleCalendarOrigin(h goa.Handler) goa.Handler {
+
 	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		origin := req.Header.Get("Origin")
 		if origin == "" {
@@ -262,7 +264,7 @@ func handleCalendarOrigin(h goa.Handler) goa.Handler {
 		}
 		if cors.MatchOrigin(origin, "*") {
 			ctx = goa.WithLogContext(ctx, "origin", origin)
-			rw.Header().Set("Access-Control-Allow-Origin", "*")
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
 			rw.Header().Set("Access-Control-Allow-Credentials", "true")
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request
@@ -284,6 +286,8 @@ func unmarshalCreateCalendarPayload(ctx context.Context, service *goa.Service, r
 	}
 	payload.Finalize()
 	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
 		return err
 	}
 	goa.ContextRequest(ctx).Payload = payload.Publicize()
@@ -298,6 +302,8 @@ func unmarshalEditCalendarPayload(ctx context.Context, service *goa.Service, req
 	}
 	payload.Finalize()
 	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
 		return err
 	}
 	goa.ContextRequest(ctx).Payload = payload.Publicize()
@@ -323,6 +329,7 @@ func MountPublicController(service *goa.Service, ctrl PublicController) {
 
 // handlePublicOrigin applies the CORS response headers corresponding to the origin.
 func handlePublicOrigin(h goa.Handler) goa.Handler {
+
 	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		origin := req.Header.Get("Origin")
 		if origin == "" {
@@ -331,7 +338,7 @@ func handlePublicOrigin(h goa.Handler) goa.Handler {
 		}
 		if cors.MatchOrigin(origin, "*") {
 			ctx = goa.WithLogContext(ctx, "origin", origin)
-			rw.Header().Set("Access-Control-Allow-Origin", "*")
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
 			rw.Header().Set("Access-Control-Allow-Credentials", "true")
 			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
 				// We are handling a preflight request

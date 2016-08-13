@@ -129,7 +129,7 @@ func LoginAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl a
 		var ok bool
 		mt, ok = resp.(*app.MaraToken)
 		if !ok {
-			t.Errorf("invalid response media: got %+v, expected instance of app.MaraToken", resp)
+			t.Fatalf("invalid response media: got %+v, expected instance of app.MaraToken", resp)
 		}
 	}
 

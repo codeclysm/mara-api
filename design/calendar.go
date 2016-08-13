@@ -34,6 +34,7 @@ var _ = Resource("calendar", func() {
 		Routing(GET("/:id"))
 		Response(OK)
 		Response(NotFound)
+		Response(InternalServerError)
 	})
 	Action("edit", func() {
 		Description("change properties of a single appointment")
@@ -41,12 +42,15 @@ var _ = Resource("calendar", func() {
 		Payload(AppointmentPayload)
 		Response(OK)
 		Response(BadRequest)
+		Response(NotFound)
+		Response(InternalServerError)
 	})
 	Action("delete", func() {
 		Description("deletes a single appointment")
 		Routing(DELETE("/:id"))
 		Response(OK)
-		Response(BadRequest)
+		Response(NotFound)
+		Response(InternalServerError)
 	})
 })
 
@@ -90,7 +94,7 @@ var AppointmentPayload = Type("Appointment", func() {
 
 var AppointmentMedia = MediaType("application/vnd.mara.appointment", func() {
 	Attributes(func() {
-		Attribute("id", UUID, "The id of the appointment")
+		Attribute("id", String, "The id of the appointment")
 		Attribute("href", String, "The url of the appointment")
 		Attribute("who", String, "Who is requesting the appointment", func() {
 			Example("Pippo Pippis")

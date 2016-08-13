@@ -14,20 +14,19 @@ package app
 
 import (
 	"github.com/goadesign/goa"
-	uuid "github.com/satori/go.uuid"
 	"time"
 )
 
 // MaraAppointment media type (default view)
 //
-// Identifier: application/vnd.mara.appointment
+// Identifier: application/vnd.mara.appointment; view=default
 type MaraAppointment struct {
 	// The email of who's requesting it
 	Email *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
 	// The url of the appointment
 	Href *string `form:"href,omitempty" json:"href,omitempty" xml:"href,omitempty"`
 	// The id of the appointment
-	ID *uuid.UUID `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// Internal notes about the Appointment
 	Notes *string `form:"notes,omitempty" json:"notes,omitempty" xml:"notes,omitempty"`
 	// The phone of the client
@@ -69,7 +68,7 @@ func (mt *MaraAppointment) Validate() (err error) {
 
 // MaraAppointmentCollection is the media type for an array of MaraAppointment (default view)
 //
-// Identifier: application/vnd.mara.appointment; type=collection
+// Identifier: application/vnd.mara.appointment; type=collection; view=default
 type MaraAppointmentCollection []*MaraAppointment
 
 // Validate validates the MaraAppointmentCollection media type instance.
@@ -91,7 +90,7 @@ func (mt MaraAppointmentCollection) Validate() (err error) {
 
 // MaraToken media type (default view)
 //
-// Identifier: application/vnd.mara.token
+// Identifier: application/vnd.mara.token; view=default
 type MaraToken struct {
 	// The token to use in subsequent api calls
 	Token *string `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`

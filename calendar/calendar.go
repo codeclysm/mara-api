@@ -38,6 +38,27 @@ func (c *Client) Between(location string, start, end time.Time) ([]Appointment, 
 	return appointments, nil
 }
 
+// Get an appointment with a specific id
+func (c *Client) Get(id string) (*Appointment, error) {
+	query := c.DB.Query().Get(id)
+	cursor, err := c.DB.Run(query)
+	if err != nil {
+		return nil, errors.Annotatef(err, "while executing the query %v", query)
+	}
+
+	if cursor.IsNil() {
+		return nil, errors.NotFoundf("with id %s", id)
+	}
+
+	var app Appointment
+	err = cursor.One(&app)
+	if err != nil {
+		return nil, errors.Annotatef(err, "while unmarshaling cursor %v", cursor)
+	}
+
+	return &app, nil
+}
+
 // Save persists the appointment in database
 func (c *Client) Save(app *Appointment) error {
 	options := gorethink.InsertOpts{Conflict: "replace"}
@@ -47,4 +68,9 @@ func (c *Client) Save(app *Appointment) error {
 		return errors.Annotatef(err, "while executing the query %v", query)
 	}
 	return nil
+}
+
+// Delete removes an appointment from the database
+func (c *Client) Delete(app *Appointment) error {
+	return c.DB.Exec(c.DB.Query().Get(app.ID).Delete())
 }

@@ -148,9 +148,15 @@ func (ctx *DeleteCalendarContext) OK(r *MaraAppointment) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
-// BadRequest sends a HTTP response with status code 400.
-func (ctx *DeleteCalendarContext) BadRequest() error {
-	ctx.ResponseData.WriteHeader(400)
+// NotFound sends a HTTP response with status code 404.
+func (ctx *DeleteCalendarContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// InternalServerError sends a HTTP response with status code 500.
+func (ctx *DeleteCalendarContext) InternalServerError() error {
+	ctx.ResponseData.WriteHeader(500)
 	return nil
 }
 
@@ -188,6 +194,18 @@ func (ctx *EditCalendarContext) OK(r *MaraAppointment) error {
 // BadRequest sends a HTTP response with status code 400.
 func (ctx *EditCalendarContext) BadRequest() error {
 	ctx.ResponseData.WriteHeader(400)
+	return nil
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *EditCalendarContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// InternalServerError sends a HTTP response with status code 500.
+func (ctx *EditCalendarContext) InternalServerError() error {
+	ctx.ResponseData.WriteHeader(500)
 	return nil
 }
 
@@ -248,5 +266,11 @@ func (ctx *ShowCalendarContext) OK(r *MaraAppointment) error {
 // NotFound sends a HTTP response with status code 404.
 func (ctx *ShowCalendarContext) NotFound() error {
 	ctx.ResponseData.WriteHeader(404)
+	return nil
+}
+
+// InternalServerError sends a HTTP response with status code 500.
+func (ctx *ShowCalendarContext) InternalServerError() error {
+	ctx.ResponseData.WriteHeader(500)
 	return nil
 }
