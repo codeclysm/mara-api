@@ -28,6 +28,7 @@ func main() {
 		log.Print("Creating the database and tables")
 		gorethink.DBCreate("mara").RunWrite(dbu.Session)
 		gorethink.DB("mara").TableCreate("users").RunWrite(dbu.Session)
+		gorethink.DB("mara").TableCreate("appointments").RunWrite(dbu.Session)
 	case "admin":
 		log.Print("Creating an admin user")
 		hash, _ := passlib.Hash("password")
