@@ -11,10 +11,10 @@ import (
 	"github.com/codeclysm/mara-api/app"
 	"github.com/codeclysm/mara-api/auth"
 	"github.com/codeclysm/mara-api/calendar"
-	"github.com/codeclysm/rdbutils"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
 	"github.com/goadesign/goa/middleware/security/jwt"
+	r "gopkg.in/dancannon/gorethink.v2"
 )
 
 var (
@@ -35,19 +35,21 @@ func main() {
 	// Create service
 	service := goa.New("mara")
 
-	// Users Client
-	dbu := rdbutils.Database{Name: "mara", Table: "users"}
-	if err := dbu.Connect(); err != nil {
+	// Connect to db
+	opts := r.ConnectOpts{
+		Database:   "mara",
+		NumRetries: 3,
+	}
+	db, err := r.Connect(opts)
+	if err != nil {
 		panic("Missing database")
 	}
-	Auth = auth.Client{DB: &dbu, SigningKey: *signingKey}
+
+	// Users Client
+	Auth = auth.Client{DB: db, Table: "users", SigningKey: *signingKey}
 
 	// Calendar Client
-	dbc := rdbutils.Database{Name: "mara", Table: "appointments"}
-	if err := dbc.Connect(); err != nil {
-		panic("Missing database")
-	}
-	Calendar = calendar.Client{DB: &dbc}
+	Calendar = calendar.Client{DB: db, Table: "appointments"}
 
 	// Mount middleware
 	service.Use(middleware.RequestID())

@@ -4,10 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"gopkg.in/dancannon/gorethink.v1"
+	r "gopkg.in/dancannon/gorethink.v2"
 
 	"github.com/codeclysm/mara-api/calendar"
-	"github.com/codeclysm/rdbutils"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -17,37 +16,44 @@ func TestCalendar(t *testing.T) {
 
 type CalendarTestSuite struct {
 	suite.Suite
-	db     rdbutils.Database
+	db     r.QueryExecutor
 	client calendar.Client
 }
 
 func (t *CalendarTestSuite) SetupTest() {
-	t.db = rdbutils.Database{Name: "test", Table: "appointments"}
-	err := t.db.Connect()
-	t.Nil(err)
-	gorethink.DBCreate("test").RunWrite(t.db.Session)
-	gorethink.DB("test").TableCreate("appointments").RunWrite(t.db.Session)
-	t.client = calendar.Client{DB: &t.db}
+	opts := r.ConnectOpts{
+		Database: "test",
+	}
+	var err error
+	t.db, err = r.Connect(opts)
+
+	if err != nil {
+		t.FailNow("Can't connect to database")
+	}
+
+	r.DBCreate("test").RunWrite(t.db)
+	r.DB("test").TableCreate("appointments").RunWrite(t.db)
+	t.client = calendar.Client{DB: t.db, Table: "appointments"}
 
 	ap1 := calendar.Appointment{Where: "here", When: time.Date(2010, time.November, 10, 22, 0, 0, 0, time.UTC)}
-	err = gorethink.DB("test").Table("appointments").Insert(ap1).Exec(t.db.Session)
+	err = r.DB("test").Table("appointments").Insert(ap1).Exec(t.db)
 	if err != nil {
 		panic(err)
 	}
 	ap2 := calendar.Appointment{Where: "there", When: time.Date(2010, time.April, 10, 22, 0, 0, 0, time.UTC)}
-	err = gorethink.DB("test").Table("appointments").Insert(ap2).Exec(t.db.Session)
+	err = r.DB("test").Table("appointments").Insert(ap2).Exec(t.db)
 	if err != nil {
 		panic(err)
 	}
 	ap3 := calendar.Appointment{Where: "there", When: time.Date(2010, time.November, 10, 22, 0, 0, 0, time.UTC)}
-	err = gorethink.DB("test").Table("appointments").Insert(ap3).Exec(t.db.Session)
+	err = r.DB("test").Table("appointments").Insert(ap3).Exec(t.db)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func (t *CalendarTestSuite) TearDownTest() {
-	gorethink.DB("test").Table("appointments").Delete().Exec(t.db.Session)
+	r.DB("test").Table("appointments").Delete().Exec(t.db)
 }
 
 var TestBetweenData = []struct {

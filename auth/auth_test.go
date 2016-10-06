@@ -3,18 +3,17 @@ package auth_test
 import (
 	"testing"
 
-	"gopkg.in/dancannon/gorethink.v1"
 	"gopkg.in/hlandau/passlib.v1"
 
 	"github.com/codeclysm/mara-api/auth"
-	"github.com/codeclysm/rdbutils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/stretchr/testify/suite"
+	r "gopkg.in/dancannon/gorethink.v2"
 )
 
 type LoginTestSuite struct {
 	suite.Suite
-	db     rdbutils.Database
+	db     r.QueryExecutor
 	client auth.Client
 }
 
@@ -31,7 +30,8 @@ func (t *LoginTestSuite) TestLoginSuccess() {
 		return []byte("secret"), nil
 	})
 	t.Nil(err)
-	t.Equal(token.Claims["user"], "user")
+	claims := token.Claims.(jwt.MapClaims)
+	t.Equal(claims["user"], "user")
 }
 
 // When you call auth.Client.Login() with a non existing user it should return
@@ -47,20 +47,27 @@ func (t *LoginTestSuite) TestLoginFailure() {
 }
 
 func (t *LoginTestSuite) SetupTest() {
-	t.db = rdbutils.Database{Name: "test", Table: "users"}
-	err := t.db.Connect()
-	t.Nil(err)
-	gorethink.DBCreate("test").RunWrite(t.db.Session)
-	gorethink.DB("test").TableCreate("users").RunWrite(t.db.Session)
-	t.client = auth.Client{DB: &t.db, SigningKey: "secret"}
+	opts := r.ConnectOpts{
+		Database: "test",
+	}
+	var err error
+	t.db, err = r.Connect(opts)
+
+	if err != nil {
+		t.FailNow("Can't connect to database")
+	}
+
+	r.DBCreate("test").RunWrite(t.db)
+	r.DB("test").TableCreate("users").RunWrite(t.db)
+	t.client = auth.Client{DB: t.db, Table: "users", SigningKey: "secret"}
 
 	hash, _ := passlib.Hash("password")
 	user := auth.User{Username: "user", Password: hash}
-	gorethink.DB("test").Table("users").Insert(user).Exec(t.db.Session)
+	r.DB("test").Table("users").Insert(user).Exec(t.db)
 }
 
 func (t *LoginTestSuite) TearDownTest() {
-	gorethink.DB("test").Table("users").Delete().Exec(t.db.Session)
+	r.DB("test").Table("users").Delete().Exec(t.db)
 }
 
 func TestLogin(t *testing.T) {

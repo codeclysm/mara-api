@@ -3,32 +3,32 @@ package calendar
 import (
 	"time"
 
-	"gopkg.in/dancannon/gorethink.v1"
+	r "gopkg.in/dancannon/gorethink.v2"
 
-	"github.com/codeclysm/rdbutils"
 	"github.com/juju/errors"
 )
 
 // Client is the way you use this module. Just instantiate it with a db instance
 // and call its methods
 type Client struct {
-	DB *rdbutils.Database
+	DB    r.QueryExecutor
+	Table string
 }
 
 // Between returns all the appointments in a certain location, after the time start and before the time end, included.
 func (c *Client) Between(location string, start, end time.Time) ([]Appointment, error) {
 	// Build the query
-	query := c.DB.Query()
+	query := r.Table(c.Table)
 	if location != "" {
-		query = c.DB.Query().Filter(map[string]string{"where": location})
+		query = r.Table(c.Table).Filter(map[string]string{"where": location})
 	}
 
-	query = query.Filter(func(row gorethink.Term) gorethink.Term {
+	query = query.Filter(func(row r.Term) r.Term {
 		return row.Field("when").During(start, end)
 	})
 
 	// Execute the query
-	cursor, err := c.DB.Run(query)
+	cursor, err := query.Run(c.DB)
 	if err != nil {
 		return nil, errors.Annotatef(err, "while executing the query %v", query)
 	}
@@ -44,8 +44,8 @@ func (c *Client) Between(location string, start, end time.Time) ([]Appointment, 
 
 // Get an appointment with a specific id
 func (c *Client) Get(id string) (*Appointment, error) {
-	query := c.DB.Query().Get(id)
-	cursor, err := c.DB.Run(query)
+	query := r.Table(c.Table).Get(id)
+	cursor, err := query.Run(c.DB)
 	if err != nil {
 		return nil, errors.Annotatef(err, "while executing the query %v", query)
 	}
@@ -65,9 +65,9 @@ func (c *Client) Get(id string) (*Appointment, error) {
 
 // Save persists the appointment in database
 func (c *Client) Save(app *Appointment) error {
-	options := gorethink.InsertOpts{Conflict: "replace"}
-	query := c.DB.Query().Insert(app, options)
-	_, err := c.DB.RunWrite(query)
+	options := r.InsertOpts{Conflict: "replace"}
+	query := r.Table(c.Table).Insert(app, options)
+	_, err := query.RunWrite(c.DB)
 	if err != nil {
 		return errors.Annotatef(err, "while executing the query %v", query)
 	}
@@ -76,5 +76,5 @@ func (c *Client) Save(app *Appointment) error {
 
 // Delete removes an appointment from the database
 func (c *Client) Delete(app *Appointment) error {
-	return c.DB.Exec(c.DB.Query().Get(app.ID).Delete())
+	return r.Table(c.Table).Get(app.ID).Delete().Exec(c.DB)
 }

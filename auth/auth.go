@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/codeclysm/rdbutils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/juju/errors"
-	"gopkg.in/dancannon/gorethink.v1"
+	r "gopkg.in/dancannon/gorethink.v2"
 	"gopkg.in/hlandau/passlib.v1"
 )
 
 // Client is the way you use this module. Just instantiate it with a db instance
 // and call its methods
 type Client struct {
-	DB         *rdbutils.Database
+	DB         r.QueryExecutor
+	Table      string
 	SigningKey string
 }
 
@@ -48,7 +48,7 @@ func (c *Client) Login(data *LoginData) (string, error) {
 
 // ByID returns the user given the id
 func (c *Client) ByID(id string) (*User, error) {
-	cursor, err := c.DB.Run(c.DB.Query().Get(id))
+	cursor, err := r.Table(c.Table).Get(id).Run(c.DB)
 	if err != nil {
 		return nil, err
 	}
@@ -59,9 +59,9 @@ func (c *Client) ByID(id string) (*User, error) {
 
 // Save persists an user on the database
 func (c *Client) Save(user *User) error {
-	options := gorethink.InsertOpts{Conflict: "replace"}
-	query := c.DB.Query().Insert(user, options)
-	_, err := c.DB.RunWrite(query)
+	options := r.InsertOpts{Conflict: "replace"}
+	query := r.Table(c.Table).Insert(user, options)
+	_, err := query.RunWrite(c.DB)
 	if err != nil {
 		return errors.Annotatef(err, "while executing the query %v", query)
 	}
