@@ -94,6 +94,9 @@ definitions:
         description: The username
         example: user
         type: string
+    required:
+    - user
+    - password
     title: Login
     type: object
   MaraAppointment:
@@ -234,6 +237,8 @@ definitions:
         description: The user that will receive the new password
         example: user
         type: string
+    required:
+    - user
     title: Reset
     type: object
 host: localhost:9000

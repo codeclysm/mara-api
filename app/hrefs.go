@@ -12,9 +12,13 @@
 
 package app
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // CalendarHref returns the resource href.
 func CalendarHref(id interface{}) string {
-	return fmt.Sprintf("/appointments/%v", id)
+	paramid := strings.TrimLeftFunc(fmt.Sprintf("%v", id), func(r rune) bool { return r == '/' })
+	return fmt.Sprintf("/appointments/%v", paramid)
 }

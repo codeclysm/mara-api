@@ -75,7 +75,7 @@ func main() {
 	// sendEmail(ap)
 
 	// Start service
-	if err := service.ListenAndServe(":" + *port); err != nil {
+	if err := service.ListenAndServe(*port); err != nil {
 		service.LogError("startup", "err", err)
 	}
 }

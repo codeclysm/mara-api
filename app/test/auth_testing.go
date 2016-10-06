@@ -1,3 +1,15 @@
+//************************************************************************//
+// API "mara": auth TestHelpers
+//
+// Generated with goagen v1.0.0, command line:
+// $ goagen
+// --design=github.com/codeclysm/mara-api/design
+// --out=$(GOPATH)/src/github.com/codeclysm/mara-api
+// --version=v1.0.0
+//
+// The content of this file is auto-generated, DO NOT MODIFY
+//************************************************************************//
+
 package test
 
 import (
@@ -12,14 +24,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"testing"
 )
 
 // LoginAuthBadRequest runs the method Login of the given controller with the given parameters and payload.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func LoginAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Login) http.ResponseWriter {
+func LoginAuthBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Login) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -35,6 +46,19 @@ func LoginAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service
 		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
 		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
 		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		if e.ResponseStatus() != 400 {
+			t.Errorf("unexpected payload validation error: %+v", e)
+		}
+		return nil
 	}
 
 	// Setup request context
@@ -76,7 +100,7 @@ func LoginAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func LoginAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Login) (http.ResponseWriter, *app.MaraToken) {
+func LoginAuthOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Login) (http.ResponseWriter, *app.MaraToken) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -92,6 +116,19 @@ func LoginAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl a
 		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
 		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
 		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		if e.ResponseStatus() != 200 {
+			t.Errorf("unexpected payload validation error: %+v", e)
+		}
+		return nil, nil
 	}
 
 	// Setup request context
@@ -141,7 +178,7 @@ func LoginAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl a
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ResetAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Reset) http.ResponseWriter {
+func ResetAuthBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Reset) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -157,6 +194,19 @@ func ResetAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service
 		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
 		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
 		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		if e.ResponseStatus() != 400 {
+			t.Errorf("unexpected payload validation error: %+v", e)
+		}
+		return nil
 	}
 
 	// Setup request context
@@ -198,7 +248,7 @@ func ResetAuthBadRequest(t *testing.T, ctx context.Context, service *goa.Service
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ResetAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Reset) http.ResponseWriter {
+func ResetAuthOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.AuthController, payload *app.Reset) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -214,6 +264,19 @@ func ResetAuthOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl a
 		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
 		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
 		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Validate payload
+	err := payload.Validate()
+	if err != nil {
+		e, ok := err.(goa.ServiceError)
+		if !ok {
+			panic(err) // bug
+		}
+		if e.ResponseStatus() != 200 {
+			t.Errorf("unexpected payload validation error: %+v", e)
+		}
+		return nil
 	}
 
 	// Setup request context

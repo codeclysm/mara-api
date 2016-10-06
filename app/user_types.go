@@ -196,14 +196,26 @@ type login struct {
 	User *string `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
 }
 
+// Validate validates the login type instance.
+func (ut *login) Validate() (err error) {
+	if ut.User == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "user"))
+	}
+	if ut.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "password"))
+	}
+
+	return
+}
+
 // Publicize creates Login from login
 func (ut *login) Publicize() *Login {
 	var pub Login
 	if ut.Password != nil {
-		pub.Password = ut.Password
+		pub.Password = *ut.Password
 	}
 	if ut.User != nil {
-		pub.User = ut.User
+		pub.User = *ut.User
 	}
 	return &pub
 }
@@ -211,9 +223,21 @@ func (ut *login) Publicize() *Login {
 // Login user type.
 type Login struct {
 	// The password
-	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+	Password string `form:"password" json:"password" xml:"password"`
 	// The username
-	User *string `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
+	User string `form:"user" json:"user" xml:"user"`
+}
+
+// Validate validates the Login type instance.
+func (ut *Login) Validate() (err error) {
+	if ut.User == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "user"))
+	}
+	if ut.Password == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "password"))
+	}
+
+	return
 }
 
 // reset user type.
@@ -222,11 +246,20 @@ type reset struct {
 	User *string `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
 }
 
+// Validate validates the reset type instance.
+func (ut *reset) Validate() (err error) {
+	if ut.User == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "user"))
+	}
+
+	return
+}
+
 // Publicize creates Reset from reset
 func (ut *reset) Publicize() *Reset {
 	var pub Reset
 	if ut.User != nil {
-		pub.User = ut.User
+		pub.User = *ut.User
 	}
 	return &pub
 }
@@ -234,5 +267,14 @@ func (ut *reset) Publicize() *Reset {
 // Reset user type.
 type Reset struct {
 	// The user that will receive the new password
-	User *string `form:"user,omitempty" json:"user,omitempty" xml:"user,omitempty"`
+	User string `form:"user" json:"user" xml:"user"`
+}
+
+// Validate validates the Reset type instance.
+func (ut *Reset) Validate() (err error) {
+	if ut.User == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`response`, "user"))
+	}
+
+	return
 }

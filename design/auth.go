@@ -30,12 +30,14 @@ var LoginPayload = Type("Login", func() {
 	Attribute("password", String, "The password", func() {
 		Example("password")
 	})
+	Required("user", "password")
 })
 
 var ResetPayload = Type("Reset", func() {
 	Attribute("user", String, "The user that will receive the new password", func() {
 		Example("user")
 	})
+	Required("user")
 })
 
 var TokenMedia = MediaType("application/vnd.mara.token", func() {

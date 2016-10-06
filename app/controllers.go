@@ -124,6 +124,11 @@ func unmarshalLoginAuthPayload(ctx context.Context, service *goa.Service, req *h
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
 	goa.ContextRequest(ctx).Payload = payload.Publicize()
 	return nil
 }
@@ -132,6 +137,11 @@ func unmarshalLoginAuthPayload(ctx context.Context, service *goa.Service, req *h
 func unmarshalResetAuthPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
 	payload := &reset{}
 	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
 		return err
 	}
 	goa.ContextRequest(ctx).Payload = payload.Publicize()
@@ -320,6 +330,7 @@ type PublicController interface {
 func MountPublicController(service *goa.Service, ctrl PublicController) {
 	initService(service)
 	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/builder/v1/swagger.json", ctrl.MuxHandler("preflight", handlePublicOrigin(cors.HandlePreflight()), nil))
 
 	h = ctrl.FileHandler("/builder/v1/swagger.json", "swagger/swagger.json")
 	h = handlePublicOrigin(h)

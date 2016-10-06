@@ -23,8 +23,8 @@ func NewAuthController(service *goa.Service) *AuthController {
 // Login runs the login action.
 func (c *AuthController) Login(ctx *app.LoginAuthContext) error {
 	data := auth.LoginData{
-		User:     *ctx.Payload.User,
-		Password: *ctx.Payload.Password,
+		User:     ctx.Payload.User,
+		Password: ctx.Payload.Password,
 	}
 	token, err := Auth.Login(&data)
 	if err != nil {
@@ -37,13 +37,14 @@ func (c *AuthController) Login(ctx *app.LoginAuthContext) error {
 
 // Reset runs the reset action.
 func (c *AuthController) Reset(ctx *app.ResetAuthContext) error {
-	user, err := Auth.ByID(*ctx.Payload.User)
+	user, err := Auth.ByID(ctx.Payload.User)
 	if err != nil {
 		log.Println(err)
 		return ctx.BadRequest()
 	}
 	password := random(16)
 	user.SetPassword(password)
+	log.Println("new password", password)
 	err = Auth.Save(user)
 	if err != nil {
 		log.Println(err)

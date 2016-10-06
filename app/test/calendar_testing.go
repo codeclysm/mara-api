@@ -1,3 +1,15 @@
+//************************************************************************//
+// API "mara": calendar TestHelpers
+//
+// Generated with goagen v1.0.0, command line:
+// $ goagen
+// --design=github.com/codeclysm/mara-api/design
+// --out=$(GOPATH)/src/github.com/codeclysm/mara-api
+// --version=v1.0.0
+//
+// The content of this file is auto-generated, DO NOT MODIFY
+//************************************************************************//
+
 package test
 
 import (
@@ -12,7 +24,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"testing"
 	"time"
 )
 
@@ -20,7 +31,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateCalendarBadRequest(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, payload *app.Appointment) http.ResponseWriter {
+func CreateCalendarBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, payload *app.Appointment) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -90,7 +101,7 @@ func CreateCalendarBadRequest(t *testing.T, ctx context.Context, service *goa.Se
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateCalendarInternalServerError(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, payload *app.Appointment) http.ResponseWriter {
+func CreateCalendarInternalServerError(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, payload *app.Appointment) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -160,7 +171,7 @@ func CreateCalendarInternalServerError(t *testing.T, ctx context.Context, servic
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, payload *app.Appointment) (http.ResponseWriter, *app.MaraAppointment) {
+func CreateCalendarOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, payload *app.Appointment) (http.ResponseWriter, *app.MaraAppointment) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -242,7 +253,7 @@ func CreateCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, c
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func DeleteCalendarInternalServerError(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) http.ResponseWriter {
+func DeleteCalendarInternalServerError(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -299,7 +310,7 @@ func DeleteCalendarInternalServerError(t *testing.T, ctx context.Context, servic
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func DeleteCalendarNotFound(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) http.ResponseWriter {
+func DeleteCalendarNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -356,7 +367,7 @@ func DeleteCalendarNotFound(t *testing.T, ctx context.Context, service *goa.Serv
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func DeleteCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) (http.ResponseWriter, *app.MaraAppointment) {
+func DeleteCalendarOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) (http.ResponseWriter, *app.MaraAppointment) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -425,7 +436,7 @@ func DeleteCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, c
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func EditCalendarBadRequest(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string, payload *app.Appointment) http.ResponseWriter {
+func EditCalendarBadRequest(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string, payload *app.Appointment) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -496,7 +507,7 @@ func EditCalendarBadRequest(t *testing.T, ctx context.Context, service *goa.Serv
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func EditCalendarInternalServerError(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string, payload *app.Appointment) http.ResponseWriter {
+func EditCalendarInternalServerError(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string, payload *app.Appointment) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -567,7 +578,7 @@ func EditCalendarInternalServerError(t *testing.T, ctx context.Context, service 
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func EditCalendarNotFound(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string, payload *app.Appointment) http.ResponseWriter {
+func EditCalendarNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string, payload *app.Appointment) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -638,7 +649,7 @@ func EditCalendarNotFound(t *testing.T, ctx context.Context, service *goa.Servic
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func EditCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string, payload *app.Appointment) (http.ResponseWriter, *app.MaraAppointment) {
+func EditCalendarOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string, payload *app.Appointment) (http.ResponseWriter, *app.MaraAppointment) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -721,7 +732,7 @@ func EditCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctr
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListCalendarInternalServerError(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, end *time.Time, start *time.Time, where string) http.ResponseWriter {
+func ListCalendarInternalServerError(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, end *time.Time, start *time.Time, where string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -803,7 +814,7 @@ func ListCalendarInternalServerError(t *testing.T, ctx context.Context, service 
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, end *time.Time, start *time.Time, where string) (http.ResponseWriter, app.MaraAppointmentCollection) {
+func ListCalendarOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, end *time.Time, start *time.Time, where string) (http.ResponseWriter, app.MaraAppointmentCollection) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -897,7 +908,7 @@ func ListCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctr
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ShowCalendarInternalServerError(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) http.ResponseWriter {
+func ShowCalendarInternalServerError(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -954,7 +965,7 @@ func ShowCalendarInternalServerError(t *testing.T, ctx context.Context, service 
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ShowCalendarNotFound(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) http.ResponseWriter {
+func ShowCalendarNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -1011,7 +1022,7 @@ func ShowCalendarNotFound(t *testing.T, ctx context.Context, service *goa.Servic
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ShowCalendarOK(t *testing.T, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) (http.ResponseWriter, *app.MaraAppointment) {
+func ShowCalendarOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.CalendarController, id string) (http.ResponseWriter, *app.MaraAppointment) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
